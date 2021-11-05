@@ -1,3 +1,5 @@
+import { API } from './../../config';
+
 export const SET_STREETS = 'SET_STREETS';
 export const SET_HOUSES = 'SET_HOUSES';
 export const SET_HOUSE_FLATS = 'SET_HOUSE_FLATS';
@@ -5,8 +7,6 @@ export const SELECT_OPTIONS = 'SELECT_OPTIONS';
 export const SELECT_STREET = 'SELECT_STREET';
 export const SELECT_HOUSE = 'SELECT_HOUSE';
 export const SELECT_HOUSE_FLAT = 'SELECT_HOUSE_FLAT';
-
-const API = 'https://dispex.org/api/vtest';
 
 const setStreetsAC = (streets) => ({
   type: SET_STREETS,
@@ -93,38 +93,6 @@ export const setHouseFlatThunk = (housesId) => async (dispatch) => {
   }
 };
 
-export const addResidentThunk =
-  ({ name, number, email, addressId }) =>
-  async (dispatch) => {
-    try {
-      const addResidentRes = await fetch(`${API}/HousingStock/client`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          Id: 0,
-          Name: name,
-          Phone: number,
-          Email: email,
-          BindId: 0,
-        }),
-      });
-
-      if (!addResidentRes.ok) {
-        throw new Error('Request for adding resident failed');
-      }
-
-      const addResidentData = await addResidentRes.json();
-
-      if (addResidentData.result !== 'Ok') return;
-
-      bindResident(addressId, addResidentData.id);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
-
 export const searchResidentsThunk =
   ({ streetId, houseId, houseFlatId }) =>
   async (dispatch) => {
@@ -146,24 +114,3 @@ export const searchResidentsThunk =
       console.log(err.message);
     }
   };
-
-const bindResident = async (addressId, clientId) => {
-  try {
-    const bindResidentRes = await fetch(`${API}/HousingStock/bind_client`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        AddressId: +addressId,
-        ClientId: +clientId,
-      }),
-    });
-
-    if (!bindResidentRes.ok) {
-      throw new Error('Request for binding resident to address failed');
-    }
-  } catch (err) {
-    console.log(err.message);
-  }
-};

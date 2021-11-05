@@ -1,4 +1,4 @@
-import { Button, FormControl, InputLabel, FormGroup } from '@mui/material';
+import { FormControl, InputLabel, FormGroup } from '@mui/material';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SearchFilter from './SearchFilter';
