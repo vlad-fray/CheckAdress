@@ -81,8 +81,11 @@ export const setHouseFlatThunk = (housesId) => async (dispatch) => {
     }
 
     const house_flatsData = await house_flatsRes.json();
-    console.log(house_flatsData);
-    const house_flats = house_flatsData.filter((house_flat) => house_flat.typeId === 3).map((house_flat) => ({ id: house_flat.id, name: house_flat.name }));
+    const house_flats = house_flatsData
+      .filter((house_flat) => house_flat.typeId === 3)
+      .map((house_flat) => ({ id: house_flat.id, name: house_flat.name }));
+
+    if (!house_flats.length) house_flats.push(house_flatsData.find((house_flat) => house_flat.typeId === 1));
 
     dispatch(setHouseFlatAC(house_flats));
   } catch (err) {
@@ -90,12 +93,45 @@ export const setHouseFlatThunk = (housesId) => async (dispatch) => {
   }
 };
 
+export const addResidentThunk =
+  ({ name, number, email, addressId }) =>
+  async (dispatch) => {
+    try {
+      const addResidentRes = await fetch(`${API}/HousingStock/client`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          Id: 0,
+          Name: name,
+          Phone: number,
+          Email: email,
+          BindId: 0,
+        }),
+      });
+
+      if (!addResidentRes.ok) {
+        throw new Error('Request for adding resident failed');
+      }
+
+      const addResidentData = await addResidentRes.json();
+
+      if (addResidentData.result !== 'Ok') return;
+
+      bindResident(addressId, addResidentData.id);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
 export const searchResidentsThunk =
   ({ streetId, houseId, houseFlatId }) =>
   async (dispatch) => {
     try {
       // const clientsRes = await fetch(`${API}/HousingStock?streetId=${streetId}&houseId=${houseId}`);
-      const clientsRes = await fetch(`${API}/HousingStock/clients?${houseFlatId}`);
+      const clientsRes = await fetch(`${API}/HousingStock/clients?addressId=${houseFlatId}`);
+      console.log(houseFlatId);
 
       if (!clientsRes.ok) {
         throw new Error('Request for clients failed');
@@ -110,3 +146,24 @@ export const searchResidentsThunk =
       console.log(err.message);
     }
   };
+
+const bindResident = async (addressId, clientId) => {
+  try {
+    const bindResidentRes = await fetch(`${API}/HousingStock/bind_client`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        AddressId: +addressId,
+        ClientId: +clientId,
+      }),
+    });
+
+    if (!bindResidentRes.ok) {
+      throw new Error('Request for binding resident to address failed');
+    }
+  } catch (err) {
+    console.log(err.message);
+  }
+};
