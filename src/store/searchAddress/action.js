@@ -7,6 +7,7 @@ export const SELECT_OPTIONS = 'SELECT_OPTIONS';
 export const SELECT_STREET = 'SELECT_STREET';
 export const SELECT_HOUSE = 'SELECT_HOUSE';
 export const SELECT_HOUSE_FLAT = 'SELECT_HOUSE_FLAT';
+export const SET_SEARCHED_RESIDENT = 'SET_SEARCHED_RESIDENT';
 
 const setStreetsAC = (streets) => ({
   type: SET_STREETS,
@@ -21,6 +22,11 @@ const setHousesAC = (houses) => ({
 const setHouseFlatAC = (house_flats) => ({
   type: SET_HOUSE_FLATS,
   payload: house_flats,
+});
+
+const setSearchedResidentByPhoneAC = (resident) => ({
+  type: SET_SEARCHED_RESIDENT,
+  payload: resident,
 });
 
 export const selectStreetAC = (street) => ({
@@ -93,24 +99,23 @@ export const setHouseFlatThunk = (housesId) => async (dispatch) => {
   }
 };
 
-export const searchResidentsThunk =
-  ({ streetId, houseId, houseFlatId }) =>
-  async (dispatch) => {
-    try {
-      // const clientsRes = await fetch(`${API}/HousingStock?streetId=${streetId}&houseId=${houseId}`);
-      const clientsRes = await fetch(`${API}/HousingStock/clients?addressId=${houseFlatId}`);
-      console.log(houseFlatId);
-
-      if (!clientsRes.ok) {
-        throw new Error('Request for clients failed');
-      }
-
-      const clientsData = await clientsRes.json();
-      // const house_flats = house_flatsData.filter((house_flat) => house_flat.typeId === 3).map((house_flat) => ({ id: house_flat.id, name: house_flat.name }));
-      console.log(clientsData);
-
-      // dispatch(setHouseFlatAC(house_flats));
-    } catch (err) {
-      console.log(err.message);
+export const setSearchedResidentByPhone = (phone) => async (dispatch) => {
+  try {
+    if (phone === '') {
+      dispatch(setSearchedResidentByPhoneAC(null));
+      return;
     }
-  };
+
+    const residentRes = await fetch(`${API}/HousingStock/client?phone=${phone}`);
+
+    if (!residentRes.ok) {
+      throw new Error('Request for resident failed');
+    }
+
+    const residentData = await residentRes.json();
+
+    dispatch(setSearchedResidentByPhoneAC(residentData));
+  } catch (err) {
+    console.log(err.message);
+  }
+};

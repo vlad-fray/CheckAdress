@@ -1,4 +1,4 @@
-import { FormControl, InputLabel, FormGroup } from '@mui/material';
+import { FormControl, InputLabel, FormGroup, Button } from '@mui/material';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SearchFilter from './SearchFilter';
@@ -19,6 +19,7 @@ import {
   getSelectedHouse,
   getSelectedHouseFlat,
 } from '../../store/searchAddress/selectors';
+import { searchResidents } from '../../API/editClientAPI';
 
 const SearchForm = () => {
   const streets = useSelector(getAllStreets);
@@ -48,15 +49,9 @@ const SearchForm = () => {
     dispatch(selectHouseFlatAC(house_flat));
   };
 
-  /* const searchResidentsHandler = () => {
-    dispatch(
-      searchResidentsThunk({
-        streetId: selectedStreet?.id || null,
-        houseId: selectedHouse?.id || null,
-        houseFlatId: selectedHouseFlat?.id || null,
-      })
-    );
-  }; */
+  // const searchResidentsHandler = () => {
+  //   searchResidents({ houseFlatId: selectedHouseFlat?.id || null });
+  // };
 
   return (
     <FormGroup row>

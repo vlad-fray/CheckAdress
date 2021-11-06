@@ -1,4 +1,12 @@
-import { SET_STREETS, SELECT_STREET, SET_HOUSES, SET_HOUSE_FLATS, SELECT_HOUSE, SELECT_HOUSE_FLAT } from './action';
+import {
+  SET_STREETS,
+  SELECT_STREET,
+  SET_HOUSES,
+  SET_HOUSE_FLATS,
+  SELECT_HOUSE,
+  SELECT_HOUSE_FLAT,
+  SET_SEARCHED_RESIDENT,
+} from './action';
 
 const initialState = {
   streets: [],
@@ -10,6 +18,8 @@ const initialState = {
     house: null,
     house_flat: null,
   },
+  selectedFlatResidents: [],
+  searchedResidentByPhoneNumber: null,
 };
 
 export const searchAddressReducer = (state = initialState, { type, payload }) => {
@@ -69,6 +79,14 @@ export const searchAddressReducer = (state = initialState, { type, payload }) =>
           ...state.selectedOptions,
           house_flat,
         },
+      };
+    }
+    case SET_SEARCHED_RESIDENT: {
+      const residentData = payload;
+      console.log(residentData);
+      return {
+        ...state,
+        searchedResidentByPhoneNumber: residentData,
       };
     }
   }

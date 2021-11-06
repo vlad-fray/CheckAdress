@@ -2,13 +2,12 @@ import { Button, TextField, Dialog, DialogTitle, DialogContent, DialogContentTex
 import { useState } from 'react';
 import { addResident } from './../../API/editClientAPI';
 
-const AddClientForm = ({ selectedHouseFlat, isShown, setIsShown }) => {
-  const [inputName, setInputName] = useState('');
-  const [inputNumber, setInputNumber] = useState('');
-  const [inputEmail, setInputEmail] = useState('');
+const AddClientForm = ({ selectedHouseFlat, isShown, setIsShown, initData }) => {
+  const [inputName, setInputName] = useState(initData?.name || '');
+  const [inputNumber, setInputNumber] = useState(initData?.phone || '');
+  const [inputEmail, setInputEmail] = useState(initData?.email || '');
 
   const submitHandler = async () => {
-    console.log({ name: inputName, number: inputNumber, email: inputEmail, addressId: selectedHouseFlat.id });
     await addResident({ name: inputName, number: inputNumber, email: inputEmail, addressId: selectedHouseFlat.id });
     setIsShown(false);
   };
@@ -16,9 +15,11 @@ const AddClientForm = ({ selectedHouseFlat, isShown, setIsShown }) => {
 
   return (
     <Dialog open={isShown} onClose={() => setIsShown(false)}>
-      <DialogTitle>Добавить жильца</DialogTitle>
+      <DialogTitle>Добавить или редактировать жильца</DialogTitle>
       <DialogContent>
-        <DialogContentText>Для добавления жильца обязательно введите его ФИО и номер телефона.</DialogContentText>
+        <DialogContentText>
+          Для добавления или редактирования жильца обязательно введите его ФИО и номер телефона.
+        </DialogContentText>
         <DialogContentText>Данные, отмеченные звездочкой (*), обязательны к заполению</DialogContentText>
         <TextField
           autoFocus

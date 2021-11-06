@@ -30,6 +30,23 @@ export const addResident = async ({ name, number, email, addressId }) => {
   }
 };
 
+export const searchResidents = async ({ houseFlatId }) => {
+  try {
+    const clientsRes = await fetch(`${API}/HousingStock/clients?addressId=${houseFlatId}`);
+    console.log(houseFlatId);
+
+    if (!clientsRes.ok) {
+      throw new Error('Request for clients failed');
+    }
+
+    const clientsData = await clientsRes.json();
+    console.log(clientsData);
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+// Response with code 204
 const bindResident = async (addressId, clientId) => {
   try {
     const bindResidentRes = await fetch(`${API}/HousingStock/bind_client`, {
